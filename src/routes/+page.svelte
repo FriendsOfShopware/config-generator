@@ -24,6 +24,9 @@
 
 	const values = {
 		auto_update: false,
+
+		update_mail_variables: false,
+
 		cache_redis: false,
 		cache_prefix: "",
 		cache_redis_url: "redis://localhost",
@@ -37,6 +40,9 @@
 		admin_queue_stats_worker: false,
 
 		first_run_wizard: false,
+
+		number_range_redis: false,
+		number_range_redis_url: "redis://localhost",
 	};
 
 	const generateFiles = () => {
@@ -71,6 +77,15 @@
 
 		if (!values.first_run_wizard) {
 			applyConfig(files, "shopware.store.frw", values.first_run_wizard);
+		}
+
+		if (values.number_range_redis) {
+			applyConfig(files, "shopware.number_range.increment_storage", 'Redis');
+			applyConfig(files, "shopware.number_range.redis_url", values.number_range_redis_url);
+		}
+
+		if (! values.update_mail_variables) {
+			applyConfig(files, "shopware.mail.update_mail_variables_on_send", values.update_mail_variables);
 		}
 
 		return files;
@@ -110,6 +125,11 @@
 				<Checkbox
 					label="Enable Queue Stats Worker"
 					bind:checked={values.admin_queue_stats_worker}
+				/>
+
+				<Checkbox
+					label="Update Mail Variables on Send"
+					bind:checked={values.update_mail_variables}
 				/>
 			</p>
 		</div>
@@ -157,6 +177,33 @@
 					label="Cart Expire in Days"
 					bind:value={values.cart_expire}
 				/>
+			</p>
+		</div>
+	</div>
+
+	<div class="card mt-3">
+		<div class="card-body">
+			<h5 class="card-title">Number Ranges</h5>
+			<p class="card-text">
+				<Checkbox
+					label="Enable Redis"
+					bind:checked={values.number_range_redis}
+				/>
+
+				<Textfield
+					label="Redis URL"
+					bind:value={values.number_range_redis_url}
+					disabled={!values.number_range_redis}
+				/>
+			</p>
+		</div>
+	</div>
+
+	<div class="card mt-3">
+		<div class="card-body">
+			<h5 class="card-title">Filesystem</h5>
+			<p class="card-text">
+				
 			</p>
 		</div>
 	</div>
